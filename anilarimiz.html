@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merve & Necip | Anılarımız</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#FAF6EF; --ivory-deep:#F2EAD9; --gold:#B8925A; --gold-light:#D9BD8C;
+    --gold-deep:#8C6A38; --ink:#2B2620; --ink-soft:#5C5347;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:radial-gradient(circle at 15% 10%,rgba(217,189,140,.18),transparent 40%),
+               radial-gradient(circle at 85% 90%,rgba(217,189,140,.16),transparent 40%),
+               var(--ivory);
+    color:var(--ink); font-family:'Montserrat',sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;
+  }
+  .card{ max-width:480px; width:100%; text-align:center; }
+  .fade-in{opacity:0; animation:fadeUp 1s ease forwards;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .d1{animation-delay:.1s} .d2{animation-delay:.3s} .d3{animation-delay:.5s} .d4{animation-delay:.7s}
+
+  .section-title{ font-family:'Cormorant Garamond',serif; font-size:2.1rem; font-weight:500; color:var(--ink);}
+  .photo-invite{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--ink-soft);
+    max-width:340px; margin:16px auto 34px; line-height:1.9;
+  }
+
+  .photo-icon{
+    width:96px; height:96px; margin:0 auto; border-radius:50%; background:var(--ivory-deep);
+    border:1px solid var(--gold-light); display:flex; align-items:center; justify-content:center;
+  }
+  .photo-status{ margin-top:16px; font-size:.78rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-deep); }
+
+  .photo-btn-row{ display:flex; justify-content:center; gap:12px; margin-top:26px; flex-wrap:wrap; }
+  .photo-btn{
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border:1px solid var(--gold-light);
+    background:transparent; color:var(--gold-deep); font-family:'Montserrat',sans-serif; font-size:.75rem;
+    letter-spacing:1.3px; text-transform:uppercase; cursor:pointer; border-radius:24px; transition:.3s;
+  }
+  .photo-btn:hover{ background:var(--gold-deep); color:var(--ivory); }
+
+  .drive-note{ margin-top:18px; font-size:.78rem; color:var(--ink-soft); }
+  .couple-note{ margin-top:26px; font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--ink-soft); font-size:1rem; }
+
+  .footer{ margin-top:70px; }
+  .footer-msg{ font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--ink-soft); font-size:1.02rem; }
+  .footer-names{ margin-top:14px; font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold-deep); letter-spacing:2px;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1 class="section-title fade-in d1">Anılarımız</h1>
+  <p class="photo-invite fade-in d1">Düğünümüzde çektiğiniz o güzel kareleri<br>bizimle paylaşın 🤍</p>
+
+  <div class="photo-icon fade-in d2">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#B8925A" stroke-width="1.4">
+      <rect x="3" y="5" width="18" height="14" rx="1"/>
+      <circle cx="8.5" cy="10" r="1.5"/>
+      <path d="M21 15l-5-5-9 9"/>
+    </svg>
+  </div>
+  <div class="photo-status fade-in d2" id="photoStatus">Aşağıdan Seçim Yapın</div>
+
+  <div class="photo-btn-row fade-in d3">
+    <button type="button" class="photo-btn" onclick="document.getElementById('galleryInput').click()">Galeriden Seç</button>
+    <button type="button" class="photo-btn" onclick="document.getElementById('cameraInput').click()">Kamerayla Çek</button>
+  </div>
+  <input type="file" id="galleryInput" accept="image/*" style="display:none">
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+
+  <p class="drive-note fade-in d3">Fotoğraflarınız paylaşılan Google Drive klasörümüzde bizimle buluşacak</p>
+  <p class="couple-note fade-in d4">Merve &amp; Necip</p>
+
+  <div class="footer fade-in d4">
+    <p class="footer-msg">Varlığınız bizim için en güzel hediye olacak.</p>
+    <div class="footer-names">M &#9825; N</div>
+  </div>
+</div>
+
+<script>
+  var UPLOAD_URL = "https://script.google.com/macros/s/AKfycbzL0MEw16qAk0mI-7B06Zfkp_6A0vtH_ZFefVBhn0fRAeTpwRx_4Y3B8GcZ8j8kmVnZ4A/exec";
+
+  function handlePhotoUpload(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const statusEl = document.getElementById('photoStatus');
+    statusEl.textContent = 'Yükleniyor…';
+
+    const reader = new FileReader();
+    reader.onload = function(){
+      const base64 = reader.result.split(',')[1];
+      fetch(UPLOAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          file: base64,
+          mimeType: file.type || 'image/jpeg',
+          fileName: 'misafir-' + Date.now() + '-' + (file.name || 'foto.jpg')
+        })
+      })
+      .then(function(res){ return res.json().catch(function(){ return { success: true }; }); })
+      .then(function(data){
+        statusEl.textContent = data.success ? 'Yüklendi ✓ Teşekkürler!' : 'Yükleme başarısız, tekrar deneyin.';
+      })
+      .catch(function(){
+        statusEl.textContent = 'Bağlantı hatası, tekrar deneyin.';
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('galleryInput').addEventListener('change', handlePhotoUpload);
+  document.getElementById('cameraInput').addEventListener('change', handlePhotoUpload);
+</script>
+
+</body>
+</html>
